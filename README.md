@@ -2,12 +2,6 @@
 
 This is the Assignment service
 
-Generated with
-
-```
-micro new assignment --namespace=go.micro --type=srv
-```
-
 ## Getting Started
 
 - [Configuration](#configuration)
@@ -19,20 +13,6 @@ micro new assignment --namespace=go.micro --type=srv
 - FQDN: go.micro.srv.assignment
 - Type: srv
 - Alias: assignment
-
-## Dependencies
-
-Micro services depend on service discovery. The default is multicast DNS, a zeroconf system.
-
-In the event you need a resilient multi-host setup we recommend consul.
-
-```
-# install consul
-brew install consul
-
-# run consul
-consul agent -dev
-```
 
 ## Usage
 
@@ -46,7 +26,7 @@ make build
 
 Run the service
 ```
-./assignment-srv
+make run
 ```
 
 Build a docker image
