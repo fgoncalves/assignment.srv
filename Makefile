@@ -1,3 +1,4 @@
+OUT:="assigner"
 
 GOPATH:=$(shell go env GOPATH)
 
@@ -9,7 +10,7 @@ proto:
 .PHONY: build
 build: proto
 
-	go build -o assignment-srv main.go plugin.go
+	go build -o ${OUT} main.go plugin.go
 
 .PHONY: test
 test:
@@ -18,3 +19,12 @@ test:
 .PHONY: docker
 docker:
 	docker build . -t assignment-srv:latest
+
+.PHONY: clean
+clean:
+	rm -f ${OUT}
+
+.PHONY: run
+run:
+
+	./${OUT}
