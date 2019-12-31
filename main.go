@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/micro/go-micro/util/log"
-	"github.com/micro/go-micro"
 	"assignment/handler"
+	"assignment/subscriber"
+	"github.com/micro/go-micro"
+	"github.com/micro/go-micro/util/log"
 
 	assignment "assignment/proto/assignment"
 )
@@ -20,6 +21,12 @@ func main() {
 
 	// Register Handler
 	assignment.RegisterAssignmentHandler(service.Server(), new(handler.Assignment))
+
+	// Register Struct as Subscriber
+	micro.RegisterSubscriber("experiments", service.Server(), new(subscriber.Assigment))
+
+	// Register Function as Subscriber
+	micro.RegisterSubscriber("experiments", service.Server(), subscriber.Handler)
 
 	// Run service
 	if err := service.Run(); err != nil {

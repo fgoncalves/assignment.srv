@@ -14,3 +14,12 @@ message Request {
 message Response {
 	string variant = 1;
 }
+
+// For Pub/Sub
+message ExperimentEvent {
+	// 0 - Created
+	// 1 - deleted
+	// 2 - updated
+	int32  kind = 1;
+	string id = 2;
+}
