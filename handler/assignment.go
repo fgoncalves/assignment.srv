@@ -10,25 +10,16 @@ import (
 	assignment "assignment/proto/assignment"
 )
 
-type Assignment struct{}
+type Assignment struct {
+	ExperimentsRepository *domain.ExperimentsRepository
+}
 
 // Call is a single request handler called via client.Call or the generated client code
 func (e *Assignment) Assign(ctx context.Context, req *assignment.Request, rsp *assignment.Response) error {
-	log.Log("Received Assignment.Call request")
-
-	// TODO: We would need to find the experiment I suppose
-	experiment := domain.Experiment{
-		Name: req.ExperimentName,
-		Variants: []domain.Variant{
-			domain.Variant{
-				Name:       "control",
-				Percentage: 0.5,
-			},
-			domain.Variant{
-				Name:       "test",
-				Percentage: 0.5,
-			},
-		},
+	experiment, err := e.ExperimentsRepository.GetExperiment(req.ExperimentName)
+	if err != nil {
+		log.Log("Received error " + err.Error())
+		return err
 	}
 
 	user := domain.User{

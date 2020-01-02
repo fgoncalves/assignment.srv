@@ -15,11 +15,20 @@ message Response {
 	string variant = 1;
 }
 
-// For Pub/Sub
-message ExperimentEvent {
-	// 0 - Created
-	// 1 - deleted
-	// 2 - updated
-	int32  kind = 1;
-	string id = 2;
+// Communicate with experiments service
+service Experiments {
+	rpc Get(ExperimentRequest) returns (ExperimentResponse) {}
+}
+
+message ExperimentRequest {
+	string name = 1;
+}
+
+message ExperimentResponse {
+	message Variant {
+		string name = 1;
+		double percentage = 2;
+	}
+	string name = 1;
+	repeated Variant variants = 2;
 }

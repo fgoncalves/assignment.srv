@@ -89,3 +89,62 @@ type assignmentHandler struct {
 func (h *assignmentHandler) Assign(ctx context.Context, in *Request, out *Response) error {
 	return h.AssignmentHandler.Assign(ctx, in, out)
 }
+
+// Client API for Experiments service
+
+type ExperimentsService interface {
+	Get(ctx context.Context, in *ExperimentRequest, opts ...client.CallOption) (*ExperimentResponse, error)
+}
+
+type experimentsService struct {
+	c    client.Client
+	name string
+}
+
+func NewExperimentsService(name string, c client.Client) ExperimentsService {
+	if c == nil {
+		c = client.NewClient()
+	}
+	if len(name) == 0 {
+		name = "go.micro.srv.assignment"
+	}
+	return &experimentsService{
+		c:    c,
+		name: name,
+	}
+}
+
+func (c *experimentsService) Get(ctx context.Context, in *ExperimentRequest, opts ...client.CallOption) (*ExperimentResponse, error) {
+	req := c.c.NewRequest(c.name, "Experiments.Get", in)
+	out := new(ExperimentResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for Experiments service
+
+type ExperimentsHandler interface {
+	Get(context.Context, *ExperimentRequest, *ExperimentResponse) error
+}
+
+func RegisterExperimentsHandler(s server.Server, hdlr ExperimentsHandler, opts ...server.HandlerOption) error {
+	type experiments interface {
+		Get(ctx context.Context, in *ExperimentRequest, out *ExperimentResponse) error
+	}
+	type Experiments struct {
+		experiments
+	}
+	h := &experimentsHandler{hdlr}
+	return s.Handle(s.NewHandler(&Experiments{h}, opts...))
+}
+
+type experimentsHandler struct {
+	ExperimentsHandler
+}
+
+func (h *experimentsHandler) Get(ctx context.Context, in *ExperimentRequest, out *ExperimentResponse) error {
+	return h.ExperimentsHandler.Get(ctx, in, out)
+}
